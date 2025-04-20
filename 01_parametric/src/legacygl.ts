@@ -4,13 +4,17 @@
 */
 
 import { eval_quadratic_bezier } from "./drawing";
+import {
+    control_point_size,
+    control_points,
+    init_control_points,
+} from "./control_points";
 
 var gl;
 var canvas;
 var legacygl;
 var drawutil;
 var camera;
-var p0, p1, p2;
 var selected = null;
 
 export function draw() {
@@ -39,7 +43,14 @@ export function draw() {
     );
     for (var i = 0; i <= numsteps; ++i) {
         var t = i / numsteps;
-        legacygl.vertex2(eval_quadratic_bezier(p0, p1, p2, t));
+        legacygl.vertex2(
+            eval_quadratic_bezier(
+                control_points[0],
+                control_points[1],
+                control_points[2],
+                t,
+            ),
+        );
     }
     legacygl.end();
     // draw sample points
@@ -50,7 +61,14 @@ export function draw() {
         legacygl.begin(gl.POINTS);
         for (var i = 0; i <= numsteps; ++i) {
             var t = i / numsteps;
-            legacygl.vertex2(eval_quadratic_bezier(p0, p1, p2, t));
+            legacygl.vertex2(
+                eval_quadratic_bezier(
+                    control_points[0],
+                    control_points[1],
+                    control_points[2],
+                    t,
+                ),
+            );
         }
         legacygl.end();
     }
@@ -64,14 +82,14 @@ export function draw() {
     ) {
         legacygl.color(0.2, 0.5, 1);
         legacygl.begin(gl.LINE_STRIP);
-        legacygl.vertex2(p0);
-        legacygl.vertex2(p1);
-        legacygl.vertex2(p2);
+        for (let i = 0; i < control_point_size; i++) {
+            legacygl.vertex2(control_points[i]);
+        }
         legacygl.end();
         legacygl.begin(gl.POINTS);
-        legacygl.vertex2(p0);
-        legacygl.vertex2(p1);
-        legacygl.vertex2(p2);
+        for (let i = 0; i < control_point_size; i++) {
+            legacygl.vertex2(control_points[i]);
+        }
         legacygl.end();
     }
 }
@@ -112,9 +130,8 @@ export function init() {
     drawutil = get_drawutil(gl, legacygl);
     camera = get_camera(canvas.width);
     camera.eye = [0, 0, 7];
-    p0 = [-0.5, -0.6];
-    p1 = [1.2, 0.5];
-    p2 = [-0.4, 1.3];
+
+    init_control_points();
     // event handlers
     canvas.onmousedown = function (evt) {
         var mouse_win = this.get_mousepos(evt);
@@ -123,12 +140,11 @@ export function init() {
             return;
         }
         // pick nearest object
-        var points = [p0, p1, p2];
         var viewport = [0, 0, canvas.width, canvas.height];
         var dist_min = 10000000;
-        for (var i = 0; i < 3; ++i) {
+        for (var i = 0; i < control_point_size; ++i) {
             var object_win = glu.project(
-                [points[i][0], points[i][1], 0],
+                [control_points[i][0], control_points[i][1], 0],
                 legacygl.uniforms.modelview.value,
                 legacygl.uniforms.projection.value,
                 viewport,
@@ -136,7 +152,7 @@ export function init() {
             var dist = vec2.dist(mouse_win, object_win);
             if (dist < dist_min) {
                 dist_min = dist;
-                selected = points[i];
+                selected = control_points[i];
             }
         }
     };

@@ -3,7 +3,7 @@
     一部改変
 -->
 
-<!DOCTYPE html>
+<!doctype html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -32,6 +32,22 @@
             style="border: 1px solid #000000"
         ></canvas>
         <table>
+            <!--
+                制御点の数を変えられるフィールドを追加
+            -->
+            <tr>
+                <td>Number of Control Points:</td>
+                <td colspan="2">
+                    <input
+                        type="number"
+                        id="input_controlpoints"
+                        step="1"
+                        min="3"
+                        max="30"
+                        value="3"
+                    />
+                </td>
+            </tr>
             <tr>
                 <td>Number of Steps:</td>
                 <td colspan="2">
