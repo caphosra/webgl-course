@@ -1,9 +1,20 @@
-export function eval_quadratic_bezier(
-    p0: number[],
-    p1: number[],
-    p2: number[],
-    t: number,
-) {
-    let a = vec2.scaleAndAdd_ip(vec2.scale([], p0, 1 - t), p2, t);
-    return a;
+// 講義資料を参考にバーンスタイン基底関数を用いて実装
+
+export function eval_bezier(points: number[][], t: number): number[] {
+    let point = [0, 0];
+    let n = points.length - 1;
+    for (let i = 0; i <= n; i++) {
+        let b = combination(n, i) * Math.pow(t, i) * Math.pow(1 - t, n - i);
+        point[0] += points[i][0] * b;
+        point[1] += points[i][1] * b;
+    }
+    return point;
+}
+
+function combination(n: number, k: number): number {
+    let result = 1;
+    for (let i = 0; i < k; i++) {
+        result *= (n - i) / (i + 1);
+    }
+    return result;
 }

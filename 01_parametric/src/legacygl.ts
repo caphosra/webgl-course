@@ -3,7 +3,7 @@
     一部改変
 */
 
-import { eval_quadratic_bezier } from "./drawing";
+import { eval_bezier } from "./drawing";
 import {
     control_point_size,
     control_points,
@@ -43,14 +43,7 @@ export function draw() {
     );
     for (var i = 0; i <= numsteps; ++i) {
         var t = i / numsteps;
-        legacygl.vertex2(
-            eval_quadratic_bezier(
-                control_points[0],
-                control_points[1],
-                control_points[2],
-                t,
-            ),
-        );
+        legacygl.vertex2(eval_bezier(control_points, t));
     }
     legacygl.end();
     // draw sample points
@@ -61,14 +54,7 @@ export function draw() {
         legacygl.begin(gl.POINTS);
         for (var i = 0; i <= numsteps; ++i) {
             var t = i / numsteps;
-            legacygl.vertex2(
-                eval_quadratic_bezier(
-                    control_points[0],
-                    control_points[1],
-                    control_points[2],
-                    t,
-                ),
-            );
+            legacygl.vertex2(eval_bezier(control_points, t));
         }
         legacygl.end();
     }
