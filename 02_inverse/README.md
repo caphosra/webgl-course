@@ -1,6 +1,6 @@
 # 02 - inverse kinematics
 
-メインの実装は`src/drawing.ts`にある。
+メインの実装は`src/calc.ts`にある。
 
 ## ビルド方法
 
