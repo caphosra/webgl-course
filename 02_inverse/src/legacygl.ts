@@ -114,6 +114,7 @@ export function init() {
         "input_angle",
     ) as HTMLInputElement;
     const ik_mode = document.getElementById("ik_mode") as HTMLInputElement;
+    const fk_mode = document.getElementById("fk_mode") as HTMLInputElement;
 
     // イベントハンドラを定義する
     canvas.onmousedown = function (evt) {
@@ -156,6 +157,20 @@ export function init() {
     };
     document.onmouseup = function (evt) {
         is_dragging = false;
+    };
+
+    // IKモードとFKモードの切り替え
+    ik_mode.onchange = function (_) {
+        if (ik_mode.checked) {
+            input_selected.disabled = true;
+            input_angle.disabled = true;
+        }
+    };
+    fk_mode.onchange = function (_) {
+        if (fk_mode.checked) {
+            input_selected.disabled = false;
+            input_angle.disabled = false;
+        }
     };
 
     input_selected.max = (linkages.length - 1).toString();
